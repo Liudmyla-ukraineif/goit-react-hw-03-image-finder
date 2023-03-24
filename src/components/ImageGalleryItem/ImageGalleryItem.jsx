@@ -1,3 +1,5 @@
+// import * as basicLightbox from 'basiclightbox';
+// @import 'src/styles/main';
 
 export default function ImageGalleryItem ({gallery}){
   
