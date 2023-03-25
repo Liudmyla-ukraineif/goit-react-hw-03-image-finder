@@ -1,5 +1,6 @@
 
 import { Component } from "react";
+import PropTypes from 'prop-types';
 import ImageGalleryItem from "../ImageGalleryItem/ImageGalleryItem";
 import Loader from "components/Loader/Loader";
 import Button from "components/Button/Button";
@@ -11,11 +12,9 @@ const API_KEY ='33450738-a5a6f333e8e5416cd1742bc4b'
 export default class ImageGallery extends Component {
   state = {
     colectionImages: null,
-    // leanghtHits: null,
     page: 1,
     error: null,
     status: 'idle',
-    // showModal: false,
   }
 
   handleBtnSubmitMore = () => {
@@ -24,13 +23,6 @@ export default class ImageGallery extends Component {
     })
     )
   }
-
-  // handleClickImage = (event) => {
-  //   console.log(event.target)
-  //   this.setState({
-  //     showModal: true,
-  //   })
-  // }
 
   componentDidUpdate = (prevProps, prevState) => {
     
@@ -44,10 +36,6 @@ export default class ImageGallery extends Component {
       }, 500)
 
     }
-
-    // if (prevState.showModal !== this.state.showModal) {
-      
-    // }
   };
 
   render() {
@@ -84,4 +72,16 @@ export default class ImageGallery extends Component {
         return <h2>{error.message}</h2>
       }
     }
-  }
+}
+  
+
+ImageGallery.propType = {
+  gallery: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      webformatURL: PropTypes.node,
+      largeImageURL: PropTypes.node,
+      tags: PropTypes.string,
+    }),
+  ),
+}

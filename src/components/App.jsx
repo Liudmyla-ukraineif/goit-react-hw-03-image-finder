@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
+import PropTypes from 'prop-types';
 import Searchbar from "./Searchbar/Searchbar";
 import ImageGallery from "./ImageGallery/ImageGallery";
 
@@ -24,4 +25,9 @@ export class App extends Component {
       </div>
     )
   }
+}
+
+
+Searchbar.propType = {
+  title: PropTypes.string,
 }

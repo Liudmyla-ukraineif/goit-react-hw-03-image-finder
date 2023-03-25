@@ -1,35 +1,45 @@
-// import * as basicLightbox from 'basiclightbox';
-// @import 'src/styles/main';
-
 import { Component } from "react";
+import PropTypes from 'prop-types';
 import EditModal from "../Modal/Modal";
 
 export default class ImageGalleryItem extends Component {
   state = {
-    showModal: false,
+    selectedItem: null,
   }
 
-  toggleModal = () => {
-    this.setState(({showModal})=> ({showModal: !showModal }))
-  }
+  selectedImageModal = item => {
+    this.setState(() => ({ selectedItem: item }));
+  };
     
   render() {
     const { gallery } = this.props;
-    const { showModal } = this.state;
+    const { selectedItem } = this.state;
 
     return (
-    <ul className="ImageGallery">
-        {gallery.map(item => (
 
-          <li className="ImageGalleryItem" key={item.id} onClick={this.toggleModal} >
-            <img src={item.webformatURL} alt={item.tags} className="ImageGalleryItem-image" />
-            {showModal && (
-              <EditModal onCloseModal={this.toggleModal}>
-                <img src={item.largeImageURL} alt={item.tags} />
+        <ul className="ImageGallery">
+          {gallery.map(item => (
+            <li className="ImageGalleryItem" key={item.id}>
+              <img src={item.webformatURL} alt={item.tags} className="ImageGalleryItem-image" onClick={()=>this.selectedImageModal(item)} />
+              {!!selectedItem && (
+              <EditModal onCloseModal={()=>this.selectedImageModal()}>
+                <img src={selectedItem.largeImageURL} alt={selectedItem.tags} />
               </EditModal>)}
-          </li>))
-        }
-    </ul>  
+            </li>))
+          }
+        </ul>  
+
     );
   }
+}
+
+ImageGalleryItem.propType = {
+  gallery: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      webformatURL: PropTypes.node,
+      largeImageURL: PropTypes.node,
+      tags: PropTypes.string,
+    }),
+  ),
 }

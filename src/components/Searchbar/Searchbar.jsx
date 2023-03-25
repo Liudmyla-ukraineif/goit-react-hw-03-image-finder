@@ -1,5 +1,5 @@
 import { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,8 +38,8 @@ export default class Searchbar extends Component{
             className="SearchForm-input"
             name="colectionImages"
             type="text"
-            // autocomplete="off"
-            // autofocus
+            autocomplete="off"
+            autofocus
             placeholder="Search images and photos"
             value={this.state.colectionNameImages}
             onChange={this.handleChangeImages}
@@ -50,6 +50,6 @@ export default class Searchbar extends Component{
   }
 }
 
-// Searchbar.propType = {
-//   title: PropTypes.string,
-// }
+Searchbar.propType = {
+  title: PropTypes.string,
+}
