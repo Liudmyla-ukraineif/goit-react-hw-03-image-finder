@@ -10,6 +10,7 @@ export default class Searchbar extends Component{
   state = {
     colectionNameImages: '',
   }
+  
 
   handleChangeImages = event => {
     this.setState({ colectionNameImages: event.currentTarget.value })
@@ -28,7 +29,7 @@ export default class Searchbar extends Component{
   render() {
     return (
       <header className="Searchbar" >
-        <form className="SearchForm" onSubmit={this.handleSubmit}>
+        <form className="SearchForm" onSubmit={this.handleSubmit} >
           <button type="submit" className="SearchForm-button">
             <ImSearch  />
             <span className="SearchForm-button-label">{this.props.title}</span>
@@ -38,8 +39,8 @@ export default class Searchbar extends Component{
             className="SearchForm-input"
             name="colectionImages"
             type="text"
-            autocomplete="off"
-            autofocus
+            // autocomplete="off"
+            // autofocus
             placeholder="Search images and photos"
             value={this.state.colectionNameImages}
             onChange={this.handleChangeImages}
