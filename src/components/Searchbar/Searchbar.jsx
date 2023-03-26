@@ -39,8 +39,8 @@ export default class Searchbar extends Component{
             className="SearchForm-input"
             name="colectionImages"
             type="text"
-            // autocomplete="off"
-            // autofocus
+            autocomplete="off"
+            autofocus
             placeholder="Search images and photos"
             value={this.state.colectionNameImages}
             onChange={this.handleChangeImages}
