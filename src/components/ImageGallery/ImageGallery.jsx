@@ -16,7 +16,7 @@ export default class ImageGallery extends Component {
     total: null,
     error: null,
     status: 'idle',
-    isEndImages: false,
+    isEndImages: null,
   }
 
   handleBtnSubmitMore = () => {
@@ -31,20 +31,21 @@ export default class ImageGallery extends Component {
     if (prevProps.nameImages !== this.props.nameImages || prevState.page < this.state.page) {
       this.setState({ status: 'pending' });
       
-      setTimeout(() => {
+      // setTimeout(() => {
         fetch(`${BASE_URL}?q=${this.props.nameImages}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
           .then(response => { if (response.ok) { return response.json() } return Promise.reject(new Error(`Не вдалося знайти даних по вашому запиту ${this.props.nameImages}`)) })
           .then(colectionImages => {
-            if (colectionImages.total !== 0 && this.state.page === 1) { console.log(colectionImages)
-              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.hits.length, status: 'resolved' })
+            if (colectionImages.total !== 0 && this.state.page === 1) {
+              console.log(colectionImages); console.log(colectionImages.totalHits); console.log(colectionImages.leangh)
+              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.totalHits, isEndImages: true, status: 'resolved' })
             } else if (colectionImages.total !== 0 && this.state.page > 1 && prevProps.nameImages === this.props.nameImages) {
-              this.setState({ colectionImages: null, page: 1, error: null, isEndImages: false, status: 'resolved', })
-              this.setState({ colectionImages: colectionImages.hits, status: 'resolved' })
+              this.setState({ colectionImages: null, page: 1, total: null, error: null, isEndImages: false, status: 'resolved', })
+              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.totalHits, status: 'resolved' })
             } else if (colectionImages.total !== 0 && this.state.page > 1) {
               this.setState({ colectionImages: [...prevState.colectionImages, ...colectionImages.hits], status: 'resolved' })
             } else return Promise.reject(new Error(`Не вдалося знайти даних по вашому запиту ${this.props.nameImages}`))
         }).catch(error => { this.setState({ error: error, status: 'rejected' }) })
-      }, 500)
+      // }, 500)
     }
   };
 
@@ -62,7 +63,7 @@ export default class ImageGallery extends Component {
       return (
         <div>
           <ImageGalleryItem gallery={colectionImages} />
-          { (this.total>12) && <Button onBtnSubmit={this.handleBtnSubmitMore}/>}
+          { (this.state.isEndImages) && <Button onBtnSubmit={this.handleBtnSubmitMore}/>}
           
         </div>
       )
