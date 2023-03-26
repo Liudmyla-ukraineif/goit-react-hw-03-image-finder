@@ -27,22 +27,40 @@ export default class ImageGallery extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    
-    if (prevProps.nameImages !== this.props.nameImages || prevState.page < this.state.page) {
+    const isPromptUpdated = prevProps.nameImages !== this.props.nameImages;
+
+    if (isPromptUpdated || prevState.page < this.state.page) {
       this.setState({ status: 'pending' });
       
       // setTimeout(() => {
-        fetch(`${BASE_URL}?q=${this.props.nameImages}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
+        fetch(`${BASE_URL}?q=${this.props.nameImages}&page=${isPromptUpdated ? 1 : this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
           .then(response => { if (response.ok) { return response.json() } return Promise.reject(new Error(`Не вдалося знайти даних по вашому запиту ${this.props.nameImages}`)) })
           .then(colectionImages => {
             if (colectionImages.total !== 0 && this.state.page === 1) {
-              console.log(colectionImages); console.log(colectionImages.totalHits); console.log(colectionImages.leangh)
-              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.totalHits, isEndImages: true, status: 'resolved' })
+              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.totalHits, isEndImages: false, status: 'resolved' })
             } else if (colectionImages.total !== 0 && this.state.page > 1 && prevProps.nameImages === this.props.nameImages) {
-              this.setState({ colectionImages: null, page: 1, total: null, error: null, isEndImages: false, status: 'resolved', })
-              this.setState({ colectionImages: colectionImages.hits, total: colectionImages.totalHits, status: 'resolved' })
+              this.setState({
+              colectionImages: [
+                ...prevState.colectionImages,
+                ...colectionImages.hits,
+              ],
+              page: isPromptUpdated ? 1 : this.state.page,
+              total: colectionImages.totalHits,
+              error: null,
+              isEndImages: isPromptUpdated ? false : colectionImages.hits.length < 12,
+              status: 'resolved',
+              });
             } else if (colectionImages.total !== 0 && this.state.page > 1) {
-              this.setState({ colectionImages: [...prevState.colectionImages, ...colectionImages.hits], status: 'resolved' })
+              isPromptUpdated && window.scroll(0, 0);
+              this.setState({
+              ...prevState,
+              page: isPromptUpdated ? 1: this.state.page,
+              colectionImages: isPromptUpdated
+                ? colectionImages.hits
+                  : [...prevState.colectionImages, ...colectionImages.hits],
+              isEndImages: isPromptUpdated ? false : this.state.isEndImages,
+              status: 'resolved',
+            });
             } else return Promise.reject(new Error(`Не вдалося знайти даних по вашому запиту ${this.props.nameImages}`))
         }).catch(error => { this.setState({ error: error, status: 'rejected' }) })
       // }, 500)
@@ -63,7 +81,7 @@ export default class ImageGallery extends Component {
       return (
         <div>
           <ImageGalleryItem gallery={colectionImages} />
-          { (this.state.isEndImages) && <Button onBtnSubmit={this.handleBtnSubmitMore}/>}
+          { !this.state.isEndImages && <Button onBtnSubmit={this.handleBtnSubmitMore}/>}
           
         </div>
       )
